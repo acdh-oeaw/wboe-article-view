@@ -5,34 +5,68 @@
     :style="{ fontSize }">
     <template v-if="!hideWithoutContentAll">
       <!-- Vor Inhalten -->
-      <div :style="'height: ' + cParserOptions.get('previewLayout.spaceTopBefore') + 'px'" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceTopBefore')"></div>
-      <div :class="'h' + (cParserOptions.get('previewLayout.headerTopSize') || 4)" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.headerTop')">{{ cParserOptions.get('previewLayout.headerTop') }}</div>
-
+      <div
+        v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceTopBefore')"
+        :style="{ height: cParserOptions.get('previewLayout.spaceTopBefore') + 'px' }" />
+      <div
+        v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.headerTop')"
+        v-text="cParserOptions.get('previewLayout.headerTop')"
+        :class="'h' + (cParserOptions.get('previewLayout.headerTopSize') || 4)" />
       <template v-if="!hideWithoutContentTop">
         <template v-if="content.isMultiple && content.multipleNr === 0 && cParserObj && cParserOptions && cParserOptions.get('previewLayout.multiple.use')">
-          <div :style="'height: ' + cParserOptions.get('previewLayout.multiple.spaceBefore') + 'px'" v-if="cParserOptions.get('previewLayout.multiple.spaceBefore')"></div>
-          <div :class="'h' + (cParserOptions.get('previewLayout.multiple.headerSize') || 4)" v-if="cParserOptions.get('previewLayout.multiple.header')">{{ cParserOptions.get('previewLayout.multiple.header') }}</div>
-          <span class="before" v-if="!fxC.noBefore && cParserOptions.get('previewLayout.multiple.before')">{{ cParserOptions.get('previewLayout.multiple.before') }}</span>
+          <div
+            v-if="cParserOptions.get('previewLayout.multiple.spaceBefore')"
+            :style="{ height:  cParserOptions.get('previewLayout.multiple.spaceBefore') + 'px'}" />
+          <div
+            v-if="cParserOptions.get('previewLayout.multiple.header')"
+            v-text="cParserOptions.get('previewLayout.multiple.header')"
+            :class="'h' + (cParserOptions.get('previewLayout.multiple.headerSize') || 4)" />
+          <span
+            v-if="!fxC.noBefore && cParserOptions.get('previewLayout.multiple.before')"
+            v-text="cParserOptions.get('previewLayout.multiple.before')"
+            class="before" />
         </template>
-
-        <div :style="'height: ' + cParserOptions.get('previewLayout.spaceBefore') + 'px'" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceBefore')"></div>
-        <div :class="'h' + (cParserOptions.get('previewLayout.headerSize') || 4)" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.header')">{{ cParserOptions.get('previewLayout.header') }}</div>
-        <span class="before" v-if="!fxC.noBefore && cParserObj && cParserOptions && cParserOptions.get('previewLayout.before')">{{ cParserOptions.get('previewLayout.before') }}</span>
-
+        <div
+          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceBefore')"
+          :style="{ height: cParserOptions.get('previewLayout.spaceBefore') + 'px' }" />
+        <div
+          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.header')"
+          :class="'h' + (cParserOptions.get('previewLayout.headerSize') || 4)"
+          v-text="cParserOptions.get('previewLayout.header')" />
+        <span
+          v-if="!fxC.noBefore && cParserObj && cParserOptions && cParserOptions.get('previewLayout.before')" 
+          class="before"
+          v-text="cParserOptions.get('previewLayout.before')" />
         <!-- Inhalte -->
         <!-- justChilds -->
-        <div :id="'pox' + content.uId" :class="'obj just-childs' + (content.warnings.length > 0 ? ' warnings' : '')" v-if="layoutBase === 'justChilds'">
-          <span
+        <div
+          v-if="layoutBase === 'justChilds'"
+          :id="'pox' + content.uId"
           :class="{
-            enumerate      : true,
-            'enumerate-gt1': cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
-            enumeraterom   : cParserOptions.get('previewLayout.multiple.enumerateRom'),
-            deeper         : content.parserCopyDeep >= 3
-          }"
-          v-if="enumerate">{{ enumerate }}&nbsp;</span>
+            'obj'        : true,
+            'just-childs': true,
+            'warnings'   : content.warnings.length > 0
+          }">
+          <span
+            v-if="enumerate"
+            v-text="enumerate + ' '"
+            :class="{
+              'enumerate'    : true,
+              'enumerate-gt1': cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
+              'enumeraterom' : cParserOptions.get('previewLayout.multiple.enumerateRom'),
+              'deeper'       : content.parserCopyDeep >= 3
+            }"
+          />
           <!-- Kinder -->
           <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
-            <PreviewContent ref="childs" :content="aContent" :commentsListe="commentsListe" :showAnchors="showAnchors" :showComments="showComments" @setAnchor="setAnchorX" :selectableAnchors="selectableAnchors"
+            <PreviewContent
+              ref="childs"
+              :content="aContent"
+              :commentsListe="commentsListe"
+              :showAnchors="showAnchors"
+              :showComments="showComments"
+              @setAnchor="setAnchorX"
+              :selectableAnchors="selectableAnchors"
               v-for="(aContent, aKey) in contentChildsShown"
               :key="aContent.uId + '-' + aKey"
             />
@@ -50,25 +84,37 @@
           }"
           @click="setAnchor"
           v-else>
-          <div :id="'pox' + content.uId" class="inline rel">
-            <span :class="'enumerate' + ((cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast) ? ' enumerate-gt1' : '') + ((this.cParserOptions.get('previewLayout.multiple.enumerateFX'))?' enumeratefx deep' + content.parserCopyDeep:'')" v-if="enumerate">{{ enumerate }}&nbsp;</span>
-            <b v-if="shownTitle">{{ shownTitle }}: </b><br v-if="shownTitle && layoutBase === 'box'"/>
+          <div
+            :id="'pox' + content.uId"
+            class="inline rel">
+            <span
+              v-text="enumerate + ' '"
+              :class="{
+                'enumerate'                      : true,
+                'enumerate-gt1'                  : (cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+                'enumeratefx'                    : this.cParserOptions.get('previewLayout.multiple.enumerateFX'),
+                ['deep' + content.parserCopyDeep]: this.cParserOptions.get('previewLayout.multiple.enumerateFX')
+              }"
+              v-if="enumerate" />
+            <b
+              v-if="shownTitle"
+              v-text="shownTitle + ': '"
+              />
+            <br v-if="shownTitle && layoutBase === 'box'"/>
             <!-- Inhalt -->
             <span
               v-if="valueType === 'fix' || valueType === 'editable'"
+              v-text="content.orgXmlObj.getValueByOption(this.cParserOptions.get('value'), false)"
               :class="{
-                'val-fix': valueType === 'fix',
-                bold     : cParserOptions.get('previewLayout.bold'),
-                italic   : cParserOptions.get('previewLayout.italic'),
-                underline: cParserOptions.get('previewLayout.underline'),
-                ls1pt    : cParserOptions.get('previewLayout.ls1pt')
-              }">
-              {{ content.orgXmlObj.getValueByOption(this.cParserOptions.get('value'), false) }}
-            </span>
+                'val-fix'  : valueType === 'fix',
+                'bold'     : cParserOptions.get('previewLayout.bold'),
+                'italic'   : cParserOptions.get('previewLayout.italic'),
+                'underline': cParserOptions.get('previewLayout.underline'),
+                'ls1pt'    : cParserOptions.get('previewLayout.ls1pt')
+              }" />
             <GeoPreview
               v-else-if="cParserObj && cParserOptions && cParserOptions.get('editor.fxFunction.name') === 'GeoSelect'"
-              :content="content"
-            />
+              :content="content" />
           </div>
           <!-- Kinder -->
           <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
@@ -87,19 +133,38 @@
         </div>
 
         <!-- Nach Inhalten -->
-        <span class="join" v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use') && cParserOptions.get('previewLayout.multiple.join')">{{ cParserOptions.get('previewLayout.multiple.join') }}</span>
-
-        <span class="after" v-if="!fxC.noAfter && cParserObj && cParserOptions && cParserOptions.get('previewLayout.after')">{{ cParserOptions.get('previewLayout.after') }}</span>
-        <div class="h4" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.footer')">{{ cParserOptions.get('previewLayout.footer') }}</div>
-        <div :style="'height: ' + cParserOptions.get('previewLayout.spaceAfter') + 'px'" v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceAfter')"></div>
-
+        <span
+          class="join"
+          v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use') && cParserOptions.get('previewLayout.multiple.join')"
+          v-text="cParserOptions.get('previewLayout.multiple.join')" />
+        <span
+          class="after"
+          v-if="!fxC.noAfter && cParserObj && cParserOptions && cParserOptions.get('previewLayout.after')"
+          v-text="cParserOptions.get('previewLayout.after')" />
+        <div
+          class="h4"
+          v-text="cParserOptions.get('previewLayout.footer')"
+          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.footer')" />
+        <div
+          :style="{ height: cParserOptions.get('previewLayout.spaceAfter') + 'px'}"
+          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceAfter')" />
         <template v-if="content.isMultiple && content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use')">
-          <span class="after" v-if="!fxC.noAfter && cParserOptions.get('previewLayout.multiple.after')">{{ cParserOptions.get('previewLayout.multiple.after') }}</span>
-          <br v-if="cParserOptions.get('previewLayout.multiple.lastBR')"/>
-          <div class="h4" v-if="cParserOptions.get('previewLayout.multiple.footer')">{{ cParserOptions.get('previewLayout.multiple.footer') }}</div>
-          <div :style="'height: ' + cParserOptions.get('previewLayout.multiple.spaceAfter') + 'px'" v-if="cParserOptions.get('previewLayout.multiple.spaceAfter')"></div>
+          <span
+            class="after"
+            v-if="!fxC.noAfter && cParserOptions.get('previewLayout.multiple.after')"
+            v-text="cParserOptions.get('previewLayout.multiple.after')" />
+          <br v-if="cParserOptions.get('previewLayout.multiple.lastBR')" />
+          <div
+            class="h4"
+            v-text="cParserOptions.get('previewLayout.multiple.footer')"
+            v-if="cParserOptions.get('previewLayout.multiple.footer')" />
+          <div
+            :style="{ height: cParserOptions.get('previewLayout.multiple.spaceAfter') + 'px'}"
+            v-if="cParserOptions.get('previewLayout.multiple.spaceAfter')" />
         </template>
-        <span v-if="!cParserOptions.get('previewLayout.noSpaceAfter') && (valueType === 'fix' || valueType === 'editable')">&nbsp;</span>
+        <span
+          v-if="!cParserOptions.get('previewLayout.noSpaceAfter') && (valueType === 'fix' || valueType === 'editable')" 
+          v-text="' '" />
       </template>
     </template>
     <b-tooltip
@@ -133,8 +198,10 @@
 <script>
   import GeoPreview from './fxFunctions/GeoPreview'
   import { BTooltip } from 'bootstrap-vue'
+  // TODO: this is much better, but requires the babel-loader
+  // import { BTooltip } from 'bootstrap-vue/src/components/tooltip'
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-  import { faComment } from '@fortawesome/free-solid-svg-icons'
+  import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
   export default {
     name: 'PreviewContent',
     props: {
