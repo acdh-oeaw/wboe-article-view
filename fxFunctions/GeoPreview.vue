@@ -7,6 +7,7 @@
     name: 'GeoPreview',
     props: {
       content: Object,
+      geoStore: Object
     },
     data () {
       return {
@@ -29,6 +30,17 @@
       last (array) {
         return array[array.length - 1]
       },
+      getGrossregionFromGemeinde (sigle) {
+        if (this.geoStore && this.geoStore.grossregionen !== null && this.geoStore.grossregionen !== undefined) {
+          const s = sigle.split(/([a-z])/)[0]
+          const g = this.geoStore.grossregionen.features.find((f) => {
+            return f.properties.Sigle === s
+          })
+          return g ? g.properties.Grossreg : null
+        } else {
+          return null
+        }
+      },
       getPlacenameSigleFromRef (ref) {
         if (ref === null) {
           return null
@@ -44,8 +56,12 @@
           place.orgXmlObj.attributes.type === 'gemeinde'
         ) {
           // TODO: resolve the Großregion
-          // return this.getPlacenameSigleFromRef(place.orgXmlObj.attributes.ref) || ''
-          return ''
+          const sigle = this.getPlacenameSigleFromRef(place.orgXmlObj.attributes.ref) || null
+          const gemeinde = this.getGrossregionFromGemeinde(sigle)
+          return gemeinde
+            ? ', ' + gemeinde
+            : ''
+          // return ''
         } else {
           return ''
         }

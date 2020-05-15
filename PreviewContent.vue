@@ -60,6 +60,7 @@
           <!-- Kinder -->
           <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
             <PreviewContent
+              :geo-store="geoStore"
               ref="childs"
               :content="aContent"
               :commentsListe="commentsListe"
@@ -113,12 +114,14 @@
                 'ls1pt'    : cParserOptions.get('previewLayout.ls1pt')
               }" />
             <GeoPreview
+              :geo-store="geoStore"
               v-else-if="cParserObj && cParserOptions && cParserOptions.get('editor.fxFunction.name') === 'GeoSelect'"
               :content="content" />
           </div>
           <!-- Kinder -->
           <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
             <PreviewContent
+              :geo-store="geoStore"
               ref="childs"
               :content="aContent"
               :commentsListe="commentsListe"
@@ -205,6 +208,11 @@
   export default {
     name: 'PreviewContent',
     props: {
+      geoStore: {
+        required: false,
+        type: Object,
+        default: () => {}
+      },
       content: Object,
       fx: Object,
       showAnchors: Boolean,
