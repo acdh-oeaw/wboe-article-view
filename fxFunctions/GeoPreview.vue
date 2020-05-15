@@ -9,18 +9,6 @@
       content: Object,
       geoStore: Object
     },
-    data () {
-      return {
-        'placesEdit': [],
-      }
-    },
-    computed: {
-    },
-    watch: {
-    },
-    mounted () {
-      console.log(this.content, this.placesView())
-    },
     methods: {
       placesView () {
         return this.content.getChilds('all', true).filter(c => {
