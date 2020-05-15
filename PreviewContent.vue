@@ -468,4 +468,33 @@
     right: -13px;
     color: #ef4921;
   }
+  .rel {
+		position: relative;
+	}
+	dl.dots > dt {
+		display: list-item;
+		list-style-type: disc;
+	}
+	body {
+		font-family: 'Lato' !important;
+	}
+	.bold {
+		font-weight: bold;
+	}
+	.italic {
+		font-style: italic;
+	}
+	.underline {
+		text-decoration: underline;
+	}
+	.ls1pt {
+		letter-spacing: 1pt;
+	}
+	.hidden {
+		display: none;
+	}
+	.scroll {
+		overflow-x: auto;
+		overflow-y: scroll;
+	}
 </style>
