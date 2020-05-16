@@ -1,5 +1,15 @@
 <template>
-  <span :id="'gs' + content.uId"><template v-for="(place, pKey) in placesView()"><template v-if="pKey > 0">{{ content.fxData.join }}</template>{{ place.orgXmlObj.getValue(false) + maybeGrossregion(place) }}</template></span>
+  <span :id="'gs' + content.uId">
+    <template v-for="(place, pKey) in placesView()">
+      <span
+        :key="'pKey+' + pKey"
+        :data-geo-sigle="getPlacenameSigleFromRef(place.orgXmlObj.attributes.ref)"
+        v-text="
+          (pKey > 0 ? content.fxData.join : '')
+          + place.orgXmlObj.getValue(false)
+          + maybeGrossregion(place)" />
+    </template>
+  </span>
 </template>
 
 <script>
@@ -19,7 +29,7 @@
         return array[array.length - 1]
       },
       getGrossregionFromGemeinde (sigle) {
-        if (this.geoStore && this.geoStore.grossregionen !== null && this.geoStore.grossregionen !== undefined) {
+        if (this.geoStore && this.geoStore.grossregionen) {
           const s = sigle.split(/([a-z])/)[0]
           const g = this.geoStore.grossregionen.features.find((f) => {
             return f.properties.Sigle === s
