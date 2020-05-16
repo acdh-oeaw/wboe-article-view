@@ -48,10 +48,10 @@
       },
       maybeGrossregion (place) {
         if (
-          place.orgXmlObj !== undefined &&
-          place.orgXmlObj.attributes !== undefined &&
-          place.orgXmlObj.attributes.ref !== undefined && 
-          place.orgXmlObj.attributes.type === 'gemeinde'
+          place.orgXmlObj !== undefined
+          && place.orgXmlObj.attributes !== undefined
+          && place.orgXmlObj.attributes.ref !== undefined
+          && place.orgXmlObj.attributes.type === 'gemeinde'
         ) {
           // TODO: resolve the Großregion
           const sigle = this.getPlacenameSigleFromRef(place.orgXmlObj.attributes.ref) || null
