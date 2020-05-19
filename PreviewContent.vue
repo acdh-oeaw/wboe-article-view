@@ -200,7 +200,7 @@
 
 <script>
   import GeoPreview from './fxFunctions/GeoPreview'
-  import { BTooltip } from 'bootstrap-vue/src/components/tooltip'
+  import { BTooltip } from 'bootstrap-vue'
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
   import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
   export default {
