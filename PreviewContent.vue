@@ -87,6 +87,7 @@
           v-else>
           <div
             :id="'pox' + content.uId"
+            v-bind="additionalAttributs"
             class="inline rel">
             <span
               v-text="enumerate + ' '"
@@ -242,6 +243,27 @@
       this.updateComments()
     },
     computed: {
+      additionalAttributs () {
+        let addAttr = this.cParserOptions.get('previewLayout.addAttribute')
+        if (addAttr && addAttr.attribute) {
+          // console.log('additionalAttributs', addAttr)
+          let val = true
+          if (addAttr.sourceAttribute && this.content.orgXmlObj && this.content.orgXmlObj.attributes && this.content.orgXmlObj.attributes[addAttr.sourceAttribute]) {
+            val = this.content.orgXmlObj.attributes[addAttr.sourceAttribute]
+            if (addAttr.removePrefix) {
+              let rPrefix = this.cParserOptions.get('attributes.' + addAttr.sourceAttribute + '.prefix')
+              if (rPrefix) {
+                if (val.indexOf(rPrefix) === 0) {
+                  val = val.substr(rPrefix.length)
+                }
+              }
+              // console.log('additionalAttributs', addAttr.sourceAttribute, rPrefix, val)
+            }
+          }
+          return {[addAttr.attribute]: val}
+        }
+        return null
+      },
       fontSize () {
         return ((this.cParserObj && this.cParserOptions && this.cParserOptions.get('previewLayout.fontsize')) ? this.cParserOptions.get('previewLayout.fontsize') : 100) + '%'
       },
