@@ -429,6 +429,16 @@
         && (obj.parserObj && obj.parserObj.ready && obj.parserObj.useable)
         && (obj.orgXmlObj.type === 'TEXT' || obj.orgXmlObj.type === 'ELEMENT')
         && !(obj.parserObj.options && obj.parserObj.options.get('previewLayout.hidden'))) {
+          if (obj.parserObj.options && obj.parserObj.options.get('previewLayout.fx') === 'hideIfParentNextSame') {
+            let aParent = obj.parents[0]
+            let nParent = obj.parents[0].getSiblings('next', true, false, true)[0]
+            if (nParent && aParent.parserObj === nParent.parserObj) {
+              let nObj = nParent.childs.filter(aObj => aObj.parserObj === obj.parserObj)
+              if (nObj[0] && obj.orgXmlObj.getXML() === nObj[0].orgXmlObj.getXML()) {
+                return false
+              }
+            }
+          }
           return true
         }
         return false
