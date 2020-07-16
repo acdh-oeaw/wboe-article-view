@@ -43,18 +43,20 @@
           v-if="layoutBase === 'justChilds'"
           :id="'pox' + content.uId"
           :class="{
-            'obj'        : true,
-            'just-childs': true,
-            'warnings'   : content.warnings.length > 0
+            'obj'               : true,
+            'enumerated-childs' : enumeratedChilds.length > 1,
+            'enumerated'        : enumerate && !(cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+            'just-childs'       : true,
+            'warnings'          : content.warnings.length > 0
           }">
           <span
             v-if="enumerate"
             v-text="enumerate + ' '"
             :class="{
-              'enumerate'    : true,
-              'enumerate-gt1': cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
-              'enumeraterom' : cParserOptions.get('previewLayout.multiple.enumerateRom'),
-              'deeper'       : content.parserCopyDeep >= 3
+              'enumerate'     : true,
+              'enumerate-gt1' : cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
+              'enumeraterom'  : cParserOptions.get('previewLayout.multiple.enumerateRom'),
+              'deeper'        : content.parserCopyDeep >= 3
             }"
           />
           <!-- Kinder -->
@@ -76,12 +78,14 @@
         <!-- normal -->
         <div
           :class="{
-            obj                 : true,
-            ['lb-' + layoutBase]: true,
-            warnings            : content.warnings.length > 0,
-            hasanchor           : showAnchors && hasAnchor,
-            hasselanchor        : selectableAnchors && hasAnchor,
-            hascomment          : hasComment && showComments
+            obj                  : true,
+            'enumerated-childs'  : enumeratedChilds.length > 1,
+            'enumerated'         : enumerate && !(cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+            ['lb-' + layoutBase] : true,
+            warnings             : content.warnings.length > 0,
+            hasanchor            : showAnchors && hasAnchor,
+            hasselanchor         : selectableAnchors && hasAnchor,
+            hascomment           : hasComment && showComments
           }"
           @click="setAnchor"
           v-else>
@@ -108,11 +112,11 @@
               v-if="valueType === 'fix' || valueType === 'editable'"
               v-text="content.orgXmlObj.getValueByOption(this.cParserOptions.get('value'), false)"
               :class="{
-                'val-fix'  : valueType === 'fix',
-                'bold'     : cParserOptions.get('previewLayout.bold'),
-                'italic'   : cParserOptions.get('previewLayout.italic'),
-                'underline': cParserOptions.get('previewLayout.underline'),
-                'ls1pt'    : cParserOptions.get('previewLayout.ls1pt')
+                'val-fix'   : valueType === 'fix',
+                'bold'      : cParserOptions.get('previewLayout.bold'),
+                'italic'    : cParserOptions.get('previewLayout.italic'),
+                'underline' : cParserOptions.get('previewLayout.underline'),
+                'ls1pt'     : cParserOptions.get('previewLayout.ls1pt')
               }" />
             <GeoPreview
               :geo-store="geoStore"
@@ -243,6 +247,10 @@
       this.updateComments()
     },
     computed: {
+      enumeratedChilds () {
+        let aEnumChilds = this.contentChildsShown.filter(aChild => aChild && aChild.parserObj && aChild.parserObj.options && aChild.parserObj.options.get('previewLayout.multiple.enumerateFX'))
+        return aEnumChilds
+      },
       additionalAttributs () {
         let addAttr = this.cParserOptions.get('previewLayout.addAttribute')
         if (addAttr && addAttr.attribute) {
@@ -466,7 +474,7 @@
     font-weight: bold;
   }
   .enumerate-gt1 {
-    display: none;
+    display: none!important;
   }
   .obj.lb-inline {
     display: inline;
@@ -534,5 +542,27 @@
 	.scroll {
 		overflow-x: auto;
 		overflow-y: scroll;
-	}
+  }
+  .enumerated {
+    display: block!important;
+    margin-left: 30px;
+  }
+  .enumerated-childs > div > .enumerate {
+    position: relative;
+    height: 1px;
+    display: inline-block;
+    float: left;
+    margin-right: 8px;
+    min-width: 17px;
+  }
+  .enumerated:not(.enumerated-childs) {
+    display: block;
+    padding-left: 30px;
+    min-height: 23px;
+  }
+  .enumerated:not(.enumerated-childs) > div > .enumerate {
+    position: absolute;
+    left: -30px;
+  }
+
 </style>
