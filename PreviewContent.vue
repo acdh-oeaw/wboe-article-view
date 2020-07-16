@@ -140,7 +140,7 @@
         <span
           class="join"
           v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use') && cParserOptions.get('previewLayout.multiple.join')"
-          v-text="cParserOptions.get('previewLayout.multiple.join')" />
+          v-text="(cParserOptions.get('previewLayout.multiple.lastjoin') && content.multipleNr === content.multipleMax - 1) ? cParserOptions.get('previewLayout.multiple.lastjoin') : cParserOptions.get('previewLayout.multiple.join')" />
         <span
           class="after"
           v-if="!fxC.noAfter && cParserObj && cParserOptions && cParserOptions.get('previewLayout.after')"
