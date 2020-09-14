@@ -37,6 +37,21 @@
           v-if="!fxC.noBefore && cParserObj && cParserOptions && cParserOptions.get('previewLayout.before')" 
           class="before"
           v-text="cParserOptions.get('previewLayout.before')" />
+        <template v-if="showAttributeBefore">
+          <span :class="'inline-attr layout-' + (iaVal.class || 'attr')" v-for="(iaVal, iaKey) in showAttributeBefore" :key="'ia' + iaKey">
+            <template v-if="content.orgXmlObj && content.orgXmlObj.attributes && content.orgXmlObj.attributes[iaKey]">
+              <span class="before" v-if="iaVal.before">{{ iaVal.before }}</span>
+              <span class="title" v-if="!iaVal.hideTitle">{{ iaVal.title || attrKey }}</span>
+              <template v-if="iaVal.fx === 'valWoHt'">
+                {{ content.orgXmlObj.attributes[iaKey].indexOf('#') === 0 ? content.orgXmlObj.attributes[iaKey].substring(1) : content.orgXmlObj.attributes[iaKey] }}
+              </template>
+              <template v-else>
+                {{ content.orgXmlObj.attributes[iaKey] }}
+              </template>
+              <span class="before" v-if="iaVal.after">{{ iaVal.after }}</span>
+            </template>
+          </span>
+        </template>
         <!-- Inhalte -->
         <!-- justChilds -->
         <div
@@ -141,6 +156,21 @@
         </div>
 
         <!-- Nach Inhalten -->
+        <template v-if="showAttributeAfter">
+          <span :class="'inline-attr layout-' + (iaVal.class || 'attr')" v-for="(iaVal, iaKey) in showAttributeAfter" :key="'ia' + iaKey">
+            <template v-if="content.orgXmlObj && content.orgXmlObj.attributes && content.orgXmlObj.attributes[iaKey]">
+              <span class="before" v-if="iaVal.before">{{ iaVal.before }}</span>
+              <span class="title" v-if="!iaVal.hideTitle">{{ iaVal.title || attrKey }}</span>
+              <template v-if="iaVal.fx === 'valWoHt'">
+                {{ content.orgXmlObj.attributes[iaKey].indexOf('#') === 0 ? content.orgXmlObj.attributes[iaKey].substring(1) : content.orgXmlObj.attributes[iaKey] }}
+              </template>
+              <template v-else>
+                {{ content.orgXmlObj.attributes[iaKey] }}
+              </template>
+              <span class="before" v-if="iaVal.after">{{ iaVal.after }}</span>
+            </template>
+          </span>
+        </template>
         <span
           class="join"
           v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use') && cParserOptions.get('previewLayout.multiple.join')"
@@ -250,6 +280,12 @@
       enumeratedChilds () {
         let aEnumChilds = this.contentChildsShown.filter(aChild => aChild && aChild.parserObj && aChild.parserObj.options && aChild.parserObj.options.get('previewLayout.multiple.enumerateFX'))
         return aEnumChilds
+      },
+      showAttributeBefore () {
+        return this.content.parserObj.options && this.content.parserObj.options.get('previewLayout.showAttributeBefore')
+      },
+      showAttributeAfter () {
+        return this.content.parserObj.options && this.content.parserObj.options.get('previewLayout.showAttributeAfter')
       },
       additionalAttributs () {
         let addAttr = this.cParserOptions.get('previewLayout.addAttribute')
@@ -567,5 +603,8 @@
     position: absolute;
     left: -30px;
   }
-
+  .inline-attr.layout-right {
+    float: right;
+    font-weight: bold;
+  }
 </style>
