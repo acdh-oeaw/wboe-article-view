@@ -201,7 +201,7 @@
             v-if="cParserOptions.get('previewLayout.multiple.spaceAfter')" />
         </template>
         <span
-          v-if="!cParserOptions.get('previewLayout.noSpaceAfter') && (valueType === 'fix' || valueType === 'editable')" 
+          v-if="whitespaceAfter" 
           v-text="' '" />
       </template>
     </template>
@@ -277,6 +277,20 @@
       this.updateComments()
     },
     computed: {
+      whitespaceAfter () {
+        if (this.cParserOptions.get('previewLayout.autospace') && this.content.root.family.indexOf(this.content) > -1) {
+          let allAfter = this.content.root.family.slice(this.content.root.family.indexOf(this.content) + 1)
+          allAfter = allAfter.filter(x => x.siblings.indexOf(this.content) < 0 && x.parents.indexOf(this.content))
+          let allTextAfter = allAfter.map(x => x.orgXmlObj.getValue ? x.orgXmlObj.getValue() : null).filter(x => x !== null && x !== undefined).map(x => x.join(' ')).join(' ').trim()
+          if (allTextAfter.length > 0) {
+            if (['.', ',', ';', ':'].indexOf(allTextAfter[0]) > -1) {
+              return false
+            }
+            // console.log('allTextAfter', this.content, allTextAfter[0], allTextAfter)
+          }
+        }
+        return !this.cParserOptions.get('previewLayout.noSpaceAfter') && (this.valueType === 'fix' || this.valueType === 'editable')
+      },
       enumeratedChilds () {
         let aEnumChilds = this.contentChildsShown.filter(aChild => aChild && aChild.parserObj && aChild.parserObj.options && aChild.parserObj.options.get('previewLayout.multiple.enumerateFX'))
         return aEnumChilds
