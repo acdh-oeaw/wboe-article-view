@@ -34,9 +34,9 @@
           :class="'h' + (cParserOptions.get('previewLayout.headerSize') || 4)"
           v-text="cParserOptions.get('previewLayout.header')" />
         <span
-          v-if="!fxC.noBefore && cParserObj && cParserOptions && cParserOptions.get('previewLayout.before')" 
+          v-if="before" 
           class="before"
-          v-text="cParserOptions.get('previewLayout.before')" />
+          v-text="before" />
         <template v-if="showAttributeBefore">
           <span :class="'inline-attr layout-' + (iaVal.class || 'attr')" v-for="(iaVal, iaKey) in showAttributeBefore" :key="'ia' + iaKey">
             <template v-if="content.orgXmlObj && content.orgXmlObj.attributes && content.orgXmlObj.attributes[iaKey]">
@@ -277,6 +277,17 @@
       this.updateComments()
     },
     computed: {
+      before () {
+        if (!this.fxC.noBefore && this.cParserObj && this.cParserOptions) {
+          if (this.cParserOptions.get('previewLayout.beforeIfNotFirst')) {
+            console.log('beforeIfNotFirst', this.content)
+            return this.content.count > 0 ? this.cParserOptions.get('previewLayout.beforeIfNotFirst') : null
+          }
+          return this.cParserOptions.get('previewLayout.before')
+        } else {
+          return null
+        }
+      },
       whitespaceAfter () {
         if (this.cParserOptions.get('previewLayout.autospace') && this.content.root.family.indexOf(this.content) > -1) {
           let allAfter = this.content.root.family.slice(this.content.root.family.indexOf(this.content) + 1)
