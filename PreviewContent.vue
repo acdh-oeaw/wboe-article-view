@@ -24,8 +24,8 @@
             v-text="cParserOptions.get('previewLayout.multiple.header')"
             :class="'h' + (cParserOptions.get('previewLayout.multiple.headerSize') || 4)" />
           <span
-            v-if="!fxC.noBefore && cParserOptions.get('previewLayout.multiple.before')"
-            v-text="cParserOptions.get('previewLayout.multiple.before')"
+            v-if="multipleBefore"
+            v-text="multipleBefore"
             class="before" />
         </template>
         <div
@@ -179,8 +179,8 @@
           v-text="(cParserOptions.get('previewLayout.multiple.lastjoin') && content.multipleNr === content.multipleMax - 1) ? cParserOptions.get('previewLayout.multiple.lastjoin') : cParserOptions.get('previewLayout.multiple.join')" />
         <span
           class="after"
-          v-if="!fxC.noAfter && cParserObj && cParserOptions && cParserOptions.get('previewLayout.after')"
-          v-text="cParserOptions.get('previewLayout.after')" />
+          v-if="after"
+          v-text="after" />
         <div
           class="h4"
           v-text="cParserOptions.get('previewLayout.footer')"
@@ -191,8 +191,8 @@
         <template v-if="content.isMultiple && content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use')">
           <span
             class="after"
-            v-if="!fxC.noAfter && cParserOptions.get('previewLayout.multiple.after')"
-            v-text="cParserOptions.get('previewLayout.multiple.after')" />
+            v-if="multipleAfter"
+            v-text="multipleAfter" />
           <br v-if="cParserOptions.get('previewLayout.multiple.lastBR')" />
           <div
             class="h4"
@@ -282,10 +282,58 @@
       before () {
         if (!this.fxC.noBefore && this.cParserObj && this.cParserOptions) {
           if (this.cParserOptions.get('previewLayout.beforeIfNotFirst')) {
-            console.log('beforeIfNotFirst', this.content)
             return this.content.count > 0 ? this.cParserOptions.get('previewLayout.beforeIfNotFirst') : null
           }
+          let aOptBI = this.cParserOptions.get('previewLayout.beforeIf')
+          if (aOptBI && aOptBI.id) {
+            let aPrev = this.content.getSiblings('prev', true, false, true)[0]
+            if (aPrev && aPrev.parserObj.options.get('id') === aOptBI.id) {
+              return aOptBI.value
+            }
+          }
           return this.cParserOptions.get('previewLayout.before')
+        } else {
+          return null
+        }
+      },
+      after () {
+          if (!this.fxC.noAfter && this.cParserObj && this.cParserOptions) {
+            let aOptAI = this.cParserOptions.get('previewLayout.afterIf')
+            if (aOptAI && aOptAI.id) {
+              let aNext = this.content.getSiblings('next', true, false, true)[0]
+              if (aNext && aNext.parserObj.options.get('id') === aOptAI.id) {
+                return aOptAI.value
+              }
+            }
+            return this.cParserOptions.get('previewLayout.after')
+          } else {
+            return null
+          }
+      },
+      multipleBefore () {
+        if (!this.fxC.noBefore) {
+          let aOptBI = this.cParserOptions.get('previewLayout.multiple.beforeIf')
+          if (aOptBI && aOptBI.id) {
+            let aPrev = this.content.getSiblings('prev', true, false, true)[0]
+            if (aPrev && aPrev.parserObj.options.get('id') === aOptBI.id) {
+              return aOptBI.value
+            }
+          }
+          return this.cParserOptions.get('previewLayout.multiple.before')
+        } else {
+          return null
+        }
+      },
+      multipleAfter () {
+        if (!this.fxC.noBefore) {
+          let aOptAI = this.cParserOptions.get('previewLayout.multiple.afterIf')
+          if (aOptAI && aOptAI.id) {
+            let aNext = this.content.getSiblings('next', true, false, true)[0]
+            if (aNext && aNext.parserObj.options.get('id') === aOptAI.id) {
+              return aOptAI.value
+            }
+          }
+          return this.cParserOptions.get('previewLayout.multiple.after')
         } else {
           return null
         }
