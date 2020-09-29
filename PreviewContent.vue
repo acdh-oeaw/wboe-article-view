@@ -6,6 +6,8 @@
     <template v-if="!hideWithoutContentAll">
       <!-- Vor Inhalten -->
       <div
+        v-if="this.content.count > 0 && cParserObj && cParserOptions && cParserOptions.get('previewLayout.newlineIfNotFirst')"/>
+      <div
         v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceTopBefore')"
         :style="{ height: cParserOptions.get('previewLayout.spaceTopBefore') + 'px' }" />
       <div
