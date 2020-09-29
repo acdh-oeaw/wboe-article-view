@@ -287,7 +287,8 @@
           let aOptBI = this.cParserOptions.get('previewLayout.beforeIf')
           if (aOptBI && aOptBI.id) {
             let aPrev = this.content.getSiblings('prev', true, false, true)[0]
-            if (aPrev && aPrev.parserObj.options.get('id') === aOptBI.id) {
+            console.log('xxxx', aOptBI.id)
+            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.get('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.get('id')) > -1)) {
               return aOptBI.value
             }
           }
@@ -301,7 +302,7 @@
             let aOptAI = this.cParserOptions.get('previewLayout.afterIf')
             if (aOptAI && aOptAI.id) {
               let aNext = this.content.getSiblings('next', true, false, true)[0]
-              if (aNext && aNext.parserObj.options.get('id') === aOptAI.id) {
+              if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.get('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.get('id')) > -1)) {
                 return aOptAI.value
               }
             }
@@ -315,7 +316,7 @@
           let aOptBI = this.cParserOptions.get('previewLayout.multiple.beforeIf')
           if (aOptBI && aOptBI.id) {
             let aPrev = this.content.getSiblings('prev', true, false, true)[0]
-            if (aPrev && aPrev.parserObj.options.get('id') === aOptBI.id) {
+            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.get('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.get('id')) > -1)) {
               return aOptBI.value
             }
           }
@@ -329,7 +330,7 @@
           let aOptAI = this.cParserOptions.get('previewLayout.multiple.afterIf')
           if (aOptAI && aOptAI.id) {
             let aNext = this.content.getSiblings('next', true, false, true)[0]
-            if (aNext && aNext.parserObj.options.get('id') === aOptAI.id) {
+            if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.get('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.get('id')) > -1)) {
               return aOptAI.value
             }
           }
