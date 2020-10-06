@@ -681,6 +681,5 @@
   }
   .inline-attr.layout-right {
     float: right;
-    font-weight: bold;
   }
 </style>
