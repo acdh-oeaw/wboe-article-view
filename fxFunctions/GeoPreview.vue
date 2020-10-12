@@ -28,7 +28,7 @@
       last (array) {
         return array[array.length - 1]
       },
-      getGrossregionFromGemeinde (sigle) {
+      getGrossregionFromSigle (sigle) {
         if (this.geoStore && this.geoStore.grossregionen) {
           const s = sigle.split(/([a-z])/)[0]
           const g = this.geoStore.grossregionen.features.find((f) => {
@@ -51,15 +51,18 @@
           place.orgXmlObj !== undefined
           && place.orgXmlObj.attributes !== undefined
           && place.orgXmlObj.attributes.ref !== undefined
-          && place.orgXmlObj.attributes.type === 'gemeinde'
         ) {
           // TODO: resolve the Großregion
+          let out = null
           const sigle = this.getPlacenameSigleFromRef(place.orgXmlObj.attributes.ref) || null
-          const gemeinde = this.getGrossregionFromGemeinde(sigle)
-          return gemeinde
-            ? ', ' + gemeinde
+          if (place.orgXmlObj.attributes.type === 'gemeinde') {
+            out = this.getGrossregionFromSigle(sigle)
+          } else if (place.orgXmlObj.attributes.type === 'kleinregion') {
+            out = this.getGrossregionFromSigle(sigle)
+          }
+          return out
+            ? ', ' + out
             : ''
-          // return ''
         } else {
           return ''
         }
