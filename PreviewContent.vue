@@ -340,7 +340,7 @@
         }
       },
       whitespaceAfter () {
-        let wsA = !this.cParserOptions.get('previewLayout.noSpaceAfter') && (this.valueType === 'fix' || this.valueType === 'editable')
+        let wsA = (!this.cParserOptions.get('previewLayout.noSpaceAfter') && (this.valueType === 'fix' || this.valueType === 'editable')) || this.cParserOptions.get('previewLayout.shoudSpace')
         let allAfter = this.content.root.family.slice(this.content.root.family.indexOf(this.content) + 1)
         allAfter = allAfter.filter(x => x.parents.indexOf(this.content))
         if (wsA && allAfter.length > 0 && allAfter[0].parserObj.options.get('previewLayout.prevAutospace')) {
@@ -355,7 +355,7 @@
             if (['.', ',', ';', ':', '-'].indexOf(allTextAfter[0]) > -1) {
               wsA = false
             }
-            // console.log('allTextAfter', '"' + this.content.orgXmlObj.getValue()[0] + '"', this.content, [allTextAfter[0], allTextAfter])
+            // console.log('allTextAfter', this.content.uId, '"' + this.content.orgXmlObj.getValue()[0] + '"', this.content, [allTextAfter[0], allTextAfter])
           }
         }
         return wsA
