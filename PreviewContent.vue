@@ -344,7 +344,7 @@
         let allAfter = this.content.root.family.slice(this.content.root.family.indexOf(this.content) + 1)
         allAfter = allAfter.filter(x => x.parents.indexOf(this.content))
         if (wsA && allAfter.length > 0 && allAfter[0].parserObj.options.get('previewLayout.prevAutospace')) {
-          if (this.content.orgXmlObj.getValue()[0].slice(-1) === '-' || allAfter[0].orgXmlObj.getValue()[0][0] === '-') {
+          if (['-', '('].indexOf(this.content.orgXmlObj.getValue()[0].slice(-1)) > -1 || ['-', '('].indexOf(allAfter[0].orgXmlObj.getValue()[0][0]) > -1) {
             wsA = false
           }
           // console.log(allAfter[0], this.content.orgXmlObj.getValue()[0], allAfter[0].orgXmlObj.getValue()[0][0])
@@ -352,10 +352,10 @@
         if (wsA && this.cParserOptions.get('previewLayout.autospace') && this.content.root.family.indexOf(this.content) > -1) {
           let allTextAfter = allAfter.map(x => x.orgXmlObj.getValue ? x.orgXmlObj.getValue() : null).filter(x => x !== null && x !== undefined).map(x => x.join(' ')).join(' ').trim()
           if (allTextAfter.length > 0) {
-            if (['.', ',', ';', ':', '-'].indexOf(allTextAfter[0]) > -1) {
+            if (['.', ',', ';', ':', '-', ')'].indexOf(allTextAfter[0]) > -1) {
               wsA = false
             }
-            // console.log('allTextAfter', this.content.uId, '"' + this.content.orgXmlObj.getValue()[0] + '"', this.content, [allTextAfter[0], allTextAfter])
+            console.log('allTextAfter', this.content.uId, '"' + this.content.orgXmlObj.getValue()[0] + '"', wsA, ['.', ',', ';', ':', '-', ')'].indexOf(allTextAfter[0]), this.content, [allTextAfter[0], allTextAfter])
           }
         }
         return wsA
