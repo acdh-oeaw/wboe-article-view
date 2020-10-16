@@ -57,7 +57,6 @@
         <!-- Inhalte -->
         <!-- justChilds -->
         <div
-          v-if="layoutBase === 'justChilds'"
           :id="'pox' + content.uId"
           :class="{
             'obj'               : true,
@@ -65,7 +64,9 @@
             'enumerated'        : enumerate && !(cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
             'just-childs'       : true,
             'warnings'          : content.warnings.length > 0
-          }">
+          }"
+          :data-target="hasTarget"
+          v-if="layoutBase === 'justChilds'">
           <span
             v-if="enumerate"
             v-text="enumerate + ' '"
@@ -104,6 +105,7 @@
             hasselanchor         : selectableAnchors && hasAnchor,
             hascomment           : hasComment && showComments
           }"
+          :data-target="hasTarget"
           @click="setAnchor"
           v-else>
           <div
@@ -411,6 +413,10 @@
       },
       cParserOptions () {
         return this.content.parserObj.options
+      },
+      hasTarget () {
+        let tg = this.content.orgXmlObj && this.content.orgXmlObj.attributes && this.content.orgXmlObj.attributes['target']
+        return tg
       },
       hasAnchor () {
         let hA = (this.content.orgXmlObj && this.content.orgXmlObj.attributes && this.content.orgXmlObj.attributes['xml:id'])
