@@ -2,39 +2,40 @@
   <div
     :id="'po' + content.uId"
     class="inline prel"
-    :style="{ fontSize }">
+    :style="fontSize ? 'font-size: ' + fontSize + '%;' : null"
+  >
     <template v-if="!hideWithoutContentAll">
       <!-- Vor Inhalten -->
       <div
-        v-if="this.content.count > 0 && cParserObj && cParserOptions && cParserOptions.get('previewLayout.newlineIfNotFirst')"/>
+        v-if="this.content.count > 0 && cParserObj && cParserOptionsGet('previewLayout.newlineIfNotFirst')"/>
       <div
-        v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceTopBefore')"
-        :style="{ height: cParserOptions.get('previewLayout.spaceTopBefore') + 'px' }" />
+        v-if="cParserObj && cParserOptionsGet('previewLayout.spaceTopBefore')"
+        :style="{ height: cParserOptions.getOption('previewLayout.spaceTopBefore') + 'px' }" />
       <div
-        v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.headerTop')"
-        v-text="cParserOptions.get('previewLayout.headerTop')"
-        :class="'h' + (cParserOptions.get('previewLayout.headerTopSize') || 4)" />
+        v-if="cParserObj && cParserOptionsGet('previewLayout.headerTop')"
+        v-text="cParserOptions.getOption('previewLayout.headerTop')"
+        :class="'h' + (cParserOptions.getOption('previewLayout.headerTopSize') || 4)" />
       <template v-if="!hideWithoutContentTop">
-        <template v-if="content.isMultiple && content.multipleNr === 0 && cParserObj && cParserOptions && cParserOptions.get('previewLayout.multiple.use')">
+        <template v-if="content.isMultiple && content.multipleNr === 0 && cParserObj && cParserOptionsGet('previewLayout.multiple.use')">
           <div
-            v-if="cParserOptions.get('previewLayout.multiple.spaceBefore')"
-            :style="{ height:  cParserOptions.get('previewLayout.multiple.spaceBefore') + 'px'}" />
+            v-if="cParserOptions.getOption('previewLayout.multiple.spaceBefore')"
+            :style="{ height:  cParserOptions.getOption('previewLayout.multiple.spaceBefore') + 'px'}" />
           <div
-            v-if="cParserOptions.get('previewLayout.multiple.header')"
-            v-text="cParserOptions.get('previewLayout.multiple.header')"
-            :class="'h' + (cParserOptions.get('previewLayout.multiple.headerSize') || 4)" />
+            v-if="cParserOptions.getOption('previewLayout.multiple.header')"
+            v-text="cParserOptions.getOption('previewLayout.multiple.header')"
+            :class="'h' + (cParserOptions.getOption('previewLayout.multiple.headerSize') || 4)" />
           <span
             v-if="multipleBefore"
             v-text="multipleBefore"
             class="before" />
         </template>
         <div
-          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceBefore')"
-          :style="{ height: cParserOptions.get('previewLayout.spaceBefore') + 'px' }" />
+          v-if="cParserObj && cParserOptionsGet('previewLayout.spaceBefore')"
+          :style="{ height: cParserOptions.getOption('previewLayout.spaceBefore') + 'px' }" />
         <div
-          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.header')"
-          :class="'h' + (cParserOptions.get('previewLayout.headerSize') || 4)"
-          v-text="cParserOptions.get('previewLayout.header')" />
+          v-if="cParserObj && cParserOptionsGet('previewLayout.header')"
+          :class="'h' + (cParserOptions.getOption('previewLayout.headerSize') || 4)"
+          v-text="cParserOptions.getOption('previewLayout.header')" />
         <span
           v-if="before" 
           class="before"
@@ -61,7 +62,7 @@
           :class="{
             'obj'               : true,
             'enumerated-childs' : enumeratedChilds.length > 1,
-            'enumerated'        : enumerate && !(cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+            'enumerated'        : enumerate && !(cParserOptions.getOption('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
             'just-childs'       : true,
             'warnings'          : content.warnings.length > 0
           }"
@@ -72,13 +73,13 @@
             v-text="enumerate + ' '"
             :class="{
               'enumerate'     : true,
-              'enumerate-gt1' : cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
-              'enumeraterom'  : cParserOptions.get('previewLayout.multiple.enumerateRom'),
+              'enumerate-gt1' : cParserOptions.getOption('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast,
+              'enumeraterom'  : cParserOptions.getOption('previewLayout.multiple.enumerateRom'),
               'deeper'        : content.parserCopyDeep >= 3
             }"
           />
           <!-- Kinder -->
-          <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
+          <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.getOption('editor.fxFunction.name')) > -1)">
             <PreviewContent
               :geo-store="geoStore"
               ref="childs"
@@ -88,8 +89,8 @@
               :showComments="showComments"
               @setAnchor="setAnchorX"
               :selectableAnchors="selectableAnchors"
-              v-for="(aContent, aKey) in contentChildsShown"
-              :key="aContent.uId + '-' + aKey"
+              v-for="(aContent) in contentChildsShown"
+              :key="'ccs' + aContent.uId"
             />
           </template>
         </div>
@@ -98,7 +99,7 @@
           :class="{
             obj                  : true,
             'enumerated-childs'  : enumeratedChilds.length > 1,
-            'enumerated'         : enumerate && !(cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+            'enumerated'         : enumerate && !(cParserOptions.getOption('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
             ['lb-' + layoutBase] : true,
             warnings             : content.warnings.length > 0,
             hasanchor            : showAnchors && hasAnchor,
@@ -116,9 +117,9 @@
               v-text="enumerate + ' '"
               :class="{
                 'enumerate'                      : true,
-                'enumerate-gt1'                  : (cParserOptions.get('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
-                'enumeratefx'                    : this.cParserOptions.get('previewLayout.multiple.enumerateFX'),
-                ['deep' + content.parserCopyDeep]: this.cParserOptions.get('previewLayout.multiple.enumerateFX')
+                'enumerate-gt1'                  : (cParserOptions.getOption('layout.multiple.enumerateFX') === 'gt1' && content.multipleNr === 0 && content.multipleLast),
+                'enumeratefx'                    : this.cParserOptions.getOption('previewLayout.multiple.enumerateFX'),
+                ['deep' + content.parserCopyDeep]: this.cParserOptions.getOption('previewLayout.multiple.enumerateFX')
               }"
               v-if="enumerate" />
             <b
@@ -129,21 +130,22 @@
             <!-- Inhalt -->
             <span
               v-if="valueType === 'fix' || valueType === 'editable'"
-              v-text="content.orgXmlObj.getValueByOption(this.cParserOptions.get('value'), false)"
+              v-text="content.orgXmlObj.getValueByOption(this.cParserOptions.getOption('value'), false)"
               :class="{
                 'val-fix'   : valueType === 'fix',
-                'bold'      : cParserOptions.get('previewLayout.bold'),
-                'italic'    : cParserOptions.get('previewLayout.italic'),
-                'underline' : cParserOptions.get('previewLayout.underline'),
-                'ls1pt'     : cParserOptions.get('previewLayout.ls1pt')
+                'bold'      : cParserOptions.getOption('previewLayout.bold'),
+                'italic'    : cParserOptions.getOption('previewLayout.italic'),
+                'underline' : cParserOptions.getOption('previewLayout.underline'),
+                'ls1pt'     : cParserOptions.getOption('previewLayout.ls1pt')
               }" />
-            <GeoPreview
-              :geo-store="geoStore"
-              v-else-if="cParserObj && cParserOptions && cParserOptions.get('editor.fxFunction.name') === 'GeoSelect'"
-              :content="content" />
+            <span
+              :id="'gs' + content.uId"
+              v-html="renderingGeoPreview(content, geoStore)"
+              v-else-if="cParserObj && cParserOptionsGet('editor.fxFunction.name') === 'GeoSelect'"
+            />
           </div>
           <!-- Kinder -->
-          <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.get('editor.fxFunction.name')) > -1)">
+          <template v-if="content.childs.length > 0 && !(cParserObj && cParserOptions && childlessFxFunctions.indexOf(cParserOptions.getOption('editor.fxFunction.name')) > -1)">
             <PreviewContent
               :geo-store="geoStore"
               ref="childs"
@@ -177,32 +179,32 @@
         </template>
         <span
           class="join"
-          v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use') && cParserOptions.get('previewLayout.multiple.join')"
-          v-text="(cParserOptions.get('previewLayout.multiple.lastjoin') && content.multipleNr === content.multipleMax - 1) ? cParserOptions.get('previewLayout.multiple.lastjoin') : cParserOptions.get('previewLayout.multiple.join')" />
+          v-if="content.isMultiple && !content.multipleLast && cParserObj && cParserOptions.getOption('previewLayout.multiple.use') && cParserOptions.getOption('previewLayout.multiple.join')"
+          v-text="(cParserOptions.getOption('previewLayout.multiple.lastjoin') && content.multipleNr === content.multipleMax - 1) ? cParserOptions.getOption('previewLayout.multiple.lastjoin') : cParserOptions.getOption('previewLayout.multiple.join')" />
         <span
           class="after"
           v-if="after"
           v-text="after" />
         <div
           class="h4"
-          v-text="cParserOptions.get('previewLayout.footer')"
-          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.footer')" />
+          v-text="cParserOptions.getOption('previewLayout.footer')"
+          v-if="cParserObj && cParserOptionsGet('previewLayout.footer')" />
         <div
-          :style="{ height: cParserOptions.get('previewLayout.spaceAfter') + 'px'}"
-          v-if="cParserObj && cParserOptions && cParserOptions.get('previewLayout.spaceAfter')" />
-        <template v-if="content.isMultiple && content.multipleLast && cParserObj && cParserOptions.get('previewLayout.multiple.use')">
+          :style="{ height: cParserOptions.getOption('previewLayout.spaceAfter') + 'px'}"
+          v-if="cParserObj && cParserOptionsGet('previewLayout.spaceAfter')" />
+        <template v-if="content.isMultiple && content.multipleLast && cParserObj && cParserOptions.getOption('previewLayout.multiple.use')">
           <span
             class="after"
             v-if="multipleAfter"
             v-text="multipleAfter" />
-          <br v-if="cParserOptions.get('previewLayout.multiple.lastBR')" />
+          <br v-if="cParserOptions.getOption('previewLayout.multiple.lastBR')" />
           <div
             class="h4"
-            v-text="cParserOptions.get('previewLayout.multiple.footer')"
-            v-if="cParserOptions.get('previewLayout.multiple.footer')" />
+            v-text="cParserOptions.getOption('previewLayout.multiple.footer')"
+            v-if="cParserOptions.getOption('previewLayout.multiple.footer')" />
           <div
-            :style="{ height: cParserOptions.get('previewLayout.multiple.spaceAfter') + 'px'}"
-            v-if="cParserOptions.get('previewLayout.multiple.spaceAfter')" />
+            :style="{ height: cParserOptions.getOption('previewLayout.multiple.spaceAfter') + 'px'}"
+            v-if="cParserOptions.getOption('previewLayout.multiple.spaceAfter')" />
         </template>
         <span
           v-if="whitespaceAfter" 
@@ -238,10 +240,11 @@
 </template>
 
 <script>
-  import GeoPreview from './fxFunctions/GeoPreview'
   import { BTooltip } from 'bootstrap-vue'
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
   import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
+  import renderingPreview from './renderingPreview'
+
   export default {
     name: 'PreviewContent',
     props: {
@@ -256,11 +259,6 @@
       showComments: Boolean,
       selectableAnchors: Boolean,
       commentsListe: Object
-    },
-    components: {
-      GeoPreview,
-      BTooltip,
-      FontAwesomeIcon
     },
     data () {
       return {
@@ -283,104 +281,130 @@
     computed: {
       before () {
         if (!this.fxC.noBefore && this.cParserObj && this.cParserOptions) {
-          if (this.cParserOptions.get('previewLayout.beforeIfNotFirst')) {
-            return this.content.count > 0 ? this.cParserOptions.get('previewLayout.beforeIfNotFirst') : null
+          if (this.cParserOptions.getOption('previewLayout.beforeIfNotFirst')) {
+            return this.content.count > 0 ? this.cParserOptions.getOption('previewLayout.beforeIfNotFirst') : null
           }
-          let aOptBI = this.cParserOptions.get('previewLayout.beforeIf')
+          let aOptBI = this.cParserOptions.getOption('previewLayout.beforeIf')
           if (aOptBI && aOptBI.id) {
             let aPrev = this.content.getSiblings('prev', true, false, true)[0]
             console.log('xxxx', aOptBI.id)
-            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.get('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.get('id')) > -1)) {
+            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.getOption('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.getOption('id')) > -1)) {
               return aOptBI.value
             }
           }
-          return this.cParserOptions.get('previewLayout.before')
+          return this.cParserOptions.getOption('previewLayout.before')
         } else {
           return null
         }
       },
       after () {
           if (!this.fxC.noAfter && this.cParserObj && this.cParserOptions) {
-            let aOptAI = this.cParserOptions.get('previewLayout.afterIf')
+            let aOptAI = this.cParserOptions.getOption('previewLayout.afterIf')
             if (aOptAI && aOptAI.id) {
               let aNext = this.content.getSiblings('next', true, false, true)[0]
-              if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.get('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.get('id')) > -1)) {
+              if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.getOption('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.getOption('id')) > -1)) {
                 return aOptAI.value
               }
             }
-            return this.cParserOptions.get('previewLayout.after')
+            return this.cParserOptions.getOption('previewLayout.after')
           } else {
             return null
           }
       },
       multipleBefore () {
         if (!this.fxC.noBefore) {
-          let aOptBI = this.cParserOptions.get('previewLayout.multiple.beforeIf')
+          let aOptBI = this.cParserOptions.getOption('previewLayout.multiple.beforeIf')
           if (aOptBI && aOptBI.id) {
             let aPrev = this.content.getSiblings('prev', true, false, true)[0]
-            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.get('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.get('id')) > -1)) {
+            if (aPrev && (typeof aOptBI.id === 'string' ? aPrev.parserObj.options.getOption('id') === aOptBI.id : aOptBI.id.indexOf(aPrev.parserObj.options.getOption('id')) > -1)) {
               return aOptBI.value
             }
           }
-          return this.cParserOptions.get('previewLayout.multiple.before')
+          return this.cParserOptions.getOption('previewLayout.multiple.before')
         } else {
           return null
         }
       },
       multipleAfter () {
         if (!this.fxC.noBefore) {
-          let aOptAI = this.cParserOptions.get('previewLayout.multiple.afterIf')
+          let aOptAI = this.cParserOptions.getOption('previewLayout.multiple.afterIf')
           if (aOptAI && aOptAI.id) {
             let aNext = this.content.getSiblings('next', true, false, true)[0]
-            if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.get('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.get('id')) > -1)) {
+            if (aNext && (typeof aOptAI.id === 'string' ? aNext.parserObj.options.getOption('id') === aOptAI.id : aOptAI.id.indexOf(aNext.parserObj.options.getOption('id')) > -1)) {
               return aOptAI.value
             }
           }
-          return this.cParserOptions.get('previewLayout.multiple.after')
+          return this.cParserOptions.getOption('previewLayout.multiple.after')
         } else {
           return null
         }
       },
       whitespaceAfter () {
-        let wsA = (!this.cParserOptions.get('previewLayout.noSpaceAfter') && (this.valueType === 'fix' || this.valueType === 'editable')) || this.cParserOptions.get('previewLayout.shoudSpace')
-        let allAfter = this.content.root.family.slice(this.content.root.family.indexOf(this.content) + 1)
-        allAfter = allAfter.filter(x => x.parents.indexOf(this.content))
-        if (wsA && allAfter.length > 0 && allAfter[0].parserObj.options.get('previewLayout.prevAutospace')) {
-          if (['-', '('].indexOf(this.content.orgXmlObj.getValue()[0].slice(-1)) > -1 || ['-', '('].indexOf(allAfter[0].orgXmlObj.getValue()[0][0]) > -1) {
-            wsA = false
+        function indexFor (arr, value) {
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === value) {
+              return i
+            }
           }
-          // console.log(allAfter[0], this.content.orgXmlObj.getValue()[0], allAfter[0].orgXmlObj.getValue()[0][0])
+          return -1
         }
-        if (wsA && this.cParserOptions.get('previewLayout.autospace') && this.content.root.family.indexOf(this.content) > -1) {
-          let allTextAfter = allAfter.map(x => x.orgXmlObj.getValue ? x.orgXmlObj.getValue() : null).filter(x => x !== null && x !== undefined).map(x => x.join(' ')).join(' ').trim()
-          if (allTextAfter.length > 0) {
-            if (['.', ',', ';', ':', '-', ')'].indexOf(allTextAfter[0]) > -1) {
+        function getFirstLetterAfter (arr) {
+          for (let i = 0; i < arr.length; i++) {
+            let x = arr[i]
+            if (x.orgXmlObj.getValue) {
+              let v = x.orgXmlObj.getValue()
+              if (v && v.length > 0) {
+                let vt = v.join(' ').trim()
+                if (vt.length > 0) {
+                  return vt
+                }
+              }
+            }
+          }
+          return ''
+        }
+        let wsA = (!this.cParserOptions.getOption('previewLayout.noSpaceAfter') && (this.valueType === 'fix' || this.valueType === 'editable')) || this.cParserOptions.getOption('previewLayout.shoudSpace')
+        if (wsA) {
+          let ix = indexFor(this.content.root.family, this.content) // Slow
+          let allAfter = this.content.root.family.slice(ix + 1)
+          allAfter = allAfter.filter(x => x && x.parents && indexFor(x.parents.indexOf, this.content) > -1) // slow ?
+          if (wsA && allAfter.length > 0 && allAfter[0].parserObj.options.getOption('previewLayout.prevAutospace')) {
+            if (['-', '('].indexOf(this.content.orgXmlObj.getValue()[0].slice(-1)) > -1 || ['-', '('].indexOf(allAfter[0].orgXmlObj.getValue()[0][0]) > -1) {
               wsA = false
             }
-            console.log('allTextAfter', this.content.uId, '"' + this.content.orgXmlObj.getValue()[0] + '"', wsA, ['.', ',', ';', ':', '-', ')'].indexOf(allTextAfter[0]), this.content, [allTextAfter[0], allTextAfter])
+            // console.log(allAfter[0], this.content.orgXmlObj.getValue()[0], allAfter[0].orgXmlObj.getValue()[0][0])
+          }
+          if (wsA && this.cParserOptions.getOption('previewLayout.autospace') && ix > -1) {
+            let firstTextAfter = getFirstLetterAfter(allAfter)
+            if (firstTextAfter.length > 0) {
+              if (['.', ',', ';', ':', '-', ')'].indexOf(firstTextAfter[0]) > -1) {
+                wsA = false
+              }
+              // console.log('firstTextAfter', this.content.uId, '"' + this.content.orgXmlObj.getValue()[0] + '"', wsA, ['.', ',', ';', ':', '-', ')'].indexOf(firstTextAfter[0]), this.content, [firstTextAfter[0], firstTextAfter])
+            }
           }
         }
         return wsA
       },
       enumeratedChilds () {
-        let aEnumChilds = this.contentChildsShown.filter(aChild => aChild && aChild.parserObj && aChild.parserObj.options && aChild.parserObj.options.get('previewLayout.multiple.enumerateFX'))
+        let aEnumChilds = this.contentChildsShown.filter(aChild => aChild && aChild.parserObj && aChild.parserObj.options && aChild.parserObj.options.getOption('previewLayout.multiple.enumerateFX'))
         return aEnumChilds
       },
       showAttributeBefore () {
-        return this.content.parserObj.options && this.content.parserObj.options.get('previewLayout.showAttributeBefore')
+        return this.content.parserObj.options && this.content.parserObj.options.getOption('previewLayout.showAttributeBefore')
       },
       showAttributeAfter () {
-        return this.content.parserObj.options && this.content.parserObj.options.get('previewLayout.showAttributeAfter')
+        return this.content.parserObj.options && this.content.parserObj.options.getOption('previewLayout.showAttributeAfter')
       },
       additionalAttributs () {
-        let addAttr = this.cParserOptions.get('previewLayout.addAttribute')
+        let addAttr = this.cParserOptions.getOption('previewLayout.addAttribute')
         if (addAttr && addAttr.attribute) {
           // console.log('additionalAttributs', addAttr)
           let val = true
           if (addAttr.sourceAttribute && this.content.orgXmlObj && this.content.orgXmlObj.attributes && this.content.orgXmlObj.attributes[addAttr.sourceAttribute]) {
             val = this.content.orgXmlObj.attributes[addAttr.sourceAttribute]
             if (addAttr.removePrefix) {
-              let rPrefix = this.cParserOptions.get('attributes.' + addAttr.sourceAttribute + '.prefix')
+              let rPrefix = this.cParserOptions.getOption('attributes.' + addAttr.sourceAttribute + '.prefix')
               if (rPrefix) {
                 if (val.indexOf(rPrefix) === 0) {
                   val = val.substr(rPrefix.length)
@@ -394,7 +418,7 @@
         return null
       },
       fontSize () {
-        return ((this.cParserObj && this.cParserOptions && this.cParserOptions.get('previewLayout.fontsize')) ? this.cParserOptions.get('previewLayout.fontsize') : 100) + '%'
+        return this.cParserOptions && this.cParserOptions.getOption('layout.fontsize')
       },
       hasComment () {
         return this.content.orgXmlObj && this.content.orgXmlObj.comments && this.content.orgXmlObj.comments.length > 0
@@ -403,10 +427,10 @@
         return this.fx || {}
       },
       hideWithoutContentAll () {
-        return !this.cParserOptions.get('previewLayout.spaceTopBefore') && !this.cParserOptions.get('previewLayout.headerTopSize') && this.content.childs.length === 0 && this.cParserOptions.get('previewLayout.hideWithoutContent')
+        return !this.cParserOptions.getOption('previewLayout.spaceTopBefore') && !this.cParserOptions.getOption('previewLayout.headerTopSize') && this.content.childs.length === 0 && this.cParserOptions.getOption('previewLayout.hideWithoutContent')
       },
       hideWithoutContentTop () {
-        return this.content.childs.length === 0 && this.cParserOptions.get('previewLayout.hideWithoutContent')
+        return this.content.childs.length === 0 && this.cParserOptions.getOption('previewLayout.hideWithoutContent')
       },
       cParserObj () {
         return this.content.parserObj
@@ -447,8 +471,8 @@
         return ''
       },
       valueType () {		// Ist der aktuelle Wert 'fix', 'editable' oder 'none'?
-        if (this.cParserObj && this.cParserOptions && this.cParserOptions.get('value')) {
-          if (!this.cParserOptions.get('value.edit.use')) {
+        if (this.cParserObj && this.cParserOptions && this.cParserOptions.getOption('value')) {
+          if (!this.cParserOptions.getOption('value.edit.use')) {
             return 'fix'
           }
           return 'editable'
@@ -458,12 +482,12 @@
       layoutBase () {		// Mögliche Rückgabewerte: 'panel'/'panelClosed', 'justChilds', 'box', 'line' und 'inline'
         if (this.fx && this.fx.frame) { return this.fx.frame }
         if (this.content.isRoot) { return 'justChilds' }
-        if (this.cParserObj && this.cParserOptions && this.cParserOptions.get('previewLayout.frame')) {
-          if (this.cParserOptions.get('previewLayout.frame') === 'panelClosed') {
+        if (this.cParserObj && this.cParserOptions && this.cParserOptions.getOption('previewLayout.frame')) {
+          if (this.cParserOptions.getOption('previewLayout.frame') === 'panelClosed') {
             this.isOpen = false
             return 'box'
           }
-          return this.cParserOptions.get('previewLayout.frame')
+          return this.cParserOptions.getOption('previewLayout.frame')
         }
         return 'box'
       },
@@ -471,21 +495,21 @@
         if (this.cParserObj && this.cParserOptions) {
           if (this.cParserOptions.getResult('title')) {
             return this.cParserOptions.getResult('title')
-          } else if (this.cParserOptions.get('tagAsTitle')) {
+          } else if (this.cParserOptions.getOption('tagAsTitle')) {
             return this.content.orgXmlObj.name
           }
         }
         return null
       },
       shownTitle () {
-        if (this.cParserObj && this.cParserOptions && !this.cParserOptions.get('previewLayout.hideTitle')) {
+        if (this.cParserObj && this.cParserOptions && !this.cParserOptions.getOption('previewLayout.hideTitle')) {
           return this.title
         }
         return null
       },
       enumerate () {
         if (this.cParserObj && this.cParserOptions && this.content.isMultiple) {
-          if (this.cParserOptions.get('previewLayout.multiple.enumerateFX')) {
+          if (this.cParserOptions.getOption('previewLayout.multiple.enumerateFX')) {
             if (this.content.parserCopyDeep === 0) {
               return this.num2rom(this.content.multipleNr + 1) + '. '
             } else if (this.content.parserCopyDeep === 1) {
@@ -496,10 +520,10 @@
               return ' ' + this.num2abc(this.content.multipleNr + 1, 'α', 25) + ') '
             }
           }
-          if (this.cParserOptions.get('previewLayout.multiple.enumerateRom')) {
+          if (this.cParserOptions.getOption('previewLayout.multiple.enumerateRom')) {
             return this.num2rom(this.content.multipleNr + 1) + '. '
           }
-          if (this.cParserOptions.get('previewLayout.multiple.enumerate')) {
+          if (this.cParserOptions.getOption('previewLayout.multiple.enumerate')) {
             return this.content.multipleNr + 1 + '. '
           }
         }
@@ -520,17 +544,19 @@
       }
     },
     methods: {
+      renderingGeoPreview: renderingPreview.geoPreview,
+      cParserOptionsGet (opt) {
+        return this.cParserOptions && this.cParserOptions.getOption(opt)
+      },
       updateComments () {
-        if (this.hasComment) {
-          if (this.commentsListe && this.commentsListe.comments && this.content.orgXmlObj && this.content.orgXmlObj.comments && this.content.orgXmlObj.comments.length > 0) {
-            this.$set(this.commentsListe.comments, this.content.uId, {
-              list: this.content.orgXmlObj.comments,
-              title: this.title,
-              value: this.content.orgXmlObj.getValueByOption(this.cParserOptions.get('value'), false),
-              el: this.$el,
-              top: 0
-            })
-          }
+        if (this.hasComment && this.commentsListe && this.commentsListe.comments && !this.commentsListe.comments[this.content.uId]) {
+          this.$set(this.commentsListe.comments, this.content.uId, {
+            list: this.content.orgXmlObj.comments,
+            title: this.title,
+            value: this.content.orgXmlObj.getValueByOption(this.cParserOptions.getOption('value'), false),
+            el: this.$el,
+            top: 0
+          })
         }
       },
       num2rom (num) {		// Römische Zahlen
@@ -558,12 +584,12 @@
         return abc
       },
       showObj (obj) {		// Soll das Element angezeigt werden?
-        if (obj && obj.orgXmlObj
+        if (obj && obj.orgXmlObj && obj.parents
         && (obj.parserObj && obj.parserObj.ready && obj.parserObj.useable)
         && (obj.orgXmlObj.type === 'TEXT' || obj.orgXmlObj.type === 'ELEMENT')
-        && !(obj.parserObj.options && obj.parserObj.options.get('previewLayout.hidden'))) {
-          if (obj.parserObj.options && obj.parserObj.options.get('previewLayout.fx')) {
-            let aFx = obj.parserObj.options.get('previewLayout.fx')
+        && !(obj.parserObj.options && obj.parserObj.options.getOption('previewLayout.hidden'))) {
+          if (obj.parserObj.options && obj.parserObj.options.getOption('previewLayout.fx')) {
+            let aFx = obj.parserObj.options.getOption('previewLayout.fx')
             if (aFx === 'hideIfParentNextSame' || aFx === 'hideIfParentPrevSame') {
               let aParent = obj.parents[0]
               let nParent = obj.parents[0].getSiblings(aFx === 'hideIfParentPrevSame' ? 'prev' : 'next', true, false, true)[0]
@@ -587,6 +613,10 @@
       setAnchorX (data) {
         this.$emit('setAnchor', data)
       },
+    },
+    components: {
+      BTooltip,
+      FontAwesomeIcon
     }
   }
 </script>

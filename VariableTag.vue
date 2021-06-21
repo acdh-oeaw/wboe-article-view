@@ -6,6 +6,8 @@
       return {
       }
     },
+    mounted () {
+    },
     render: function (createElement) {
       let aData = {'class': {}, 'style': {}}
       Object.keys(this.attributes).forEach(function (aAttrKey) {

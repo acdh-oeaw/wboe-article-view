@@ -118,6 +118,7 @@
     },
     data () {
       return {
+        updateTimer: null,
       }
     },
     computed: {
@@ -142,6 +143,19 @@
     },
     mounted () {
       // console.log(this.$props)
+      // console.log('ViewPreview - mounted - timer: ' + performance.now() + ' ms.')
+    },
+    beforeCreate () {
+      // console.log('ViewPreview - beforeCreate - timer: ' + performance.now() + ' ms.')
+    },
+    beforeUpdate () {
+      this.updateTimer = performance.now()
+    },
+    updated () {
+      let aUpdDur = Math.ceil(performance.now() - this.updateTimer)
+      if (aUpdDur > 10) {
+        console.log('ViewPreview - updated: ' + aUpdDur + ' ms.')
+      }
     },
     methods: {
       debouncedHeights: _.debounce(function () {
@@ -160,10 +174,6 @@
           }
         })
         console.log(this.commentsListe.comments)
-      },
-      getCommentPos (top, aEl) {
-        // console.log(this.commentHeight)
-        return 0
       },
       length (val) {
         if (Array.isArray(val)) {
